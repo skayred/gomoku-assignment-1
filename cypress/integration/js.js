@@ -1,11 +1,13 @@
 describe("non_styled_game", () => {
-  const checkTurn = (cy, num, sym) => {
+  const checkTurn = (cy, num, sym, clean) => {
     cy.get('td').eq(num).click();
 
-    if (!!sym) {
-      cy.get('td').eq(num).contains(sym);
-    } else {
-      cy.get('td').eq(num).should('not.have.value', 'x').should('not.have.value', 'o');
+    if (!clean) {
+      if (!!sym) {
+        cy.get('td').eq(num).contains(new RegExp(sym,"i"));
+      } else {
+        cy.get('td').eq(num).should('not.have.value', new RegExp('x',"i")).should('not.have.value', new RegExp('o',"i"));
+      }
     }
   }
 
@@ -37,7 +39,7 @@ describe("non_styled_game", () => {
         checkTurn(cy, i + 1, 'o');
       }
 
-      checkTurn(cy, 24, 'x');
+      checkTurn(cy, 24, 'x', true);
 
       cy.on('window:alert', (str) => {
         expect(str).to.eq('Player 1 won!');
@@ -52,7 +54,7 @@ describe("non_styled_game", () => {
         checkTurn(cy, i + 5, 'o');
       }
 
-      checkTurn(cy, 4, 'x');
+      checkTurn(cy, 4, 'x', true);
 
       cy.on('window:alert', (str) => {
         expect(str).to.eq('Player 1 won!');
@@ -66,7 +68,7 @@ describe("non_styled_game", () => {
       }
 
       checkTurn(cy, 22, 'x');
-      checkTurn(cy, 5, 'o');
+      checkTurn(cy, 9, 'o', true);
 
       cy.on('window:alert', (str) => {
         expect(str).to.eq('Player 2 won!');
